@@ -14,22 +14,38 @@ import java.util.Date;
 /**
  * @author tritcse00526x
  */
+// Json web Token
+// an encoded string sent in the header of the client request,
+// serving to enable the server to verify the validity of the user's request
 @Component
 @Service
-public class JwtService {
-    private static final String SECRET_KEY = "123456789";
-    private static final long EXPIRE_TIME = 86400000000L;
+public class JwtService { //a class dedicated to encode UserDetails to JWT string\
+
+    private static final String SECRET_KEY = "funixse00526x"; //the JWT_SECRET string is confidential and known only to the server
+    private static final long EXPIRE_TIME = 86400000000L; //the validity period of the JWT string
     private static final Logger logger = LoggerFactory.getLogger(JwtService.class.getName());
 
+    //generate a JWT string from UserDetails information
     public String generateTokenLogin(Authentication authentication) {
         UserPrinciple userPrincipal = (UserPrinciple) authentication.getPrincipal();
 
+        //create a JWT string from username
         return Jwts.builder()
                 .setSubject((userPrincipal.getUsername()))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + EXPIRE_TIME * 1000))
                 .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
                 .compact();
+    }
+
+    //extract UserDetails information from the JWT
+    public String getUserNameFromJwtToken(String token) {
+
+        String userName = Jwts.parser()
+                .setSigningKey(SECRET_KEY)
+                .parseClaimsJws(token)
+                .getBody().getSubject();
+        return userName;
     }
 
     public boolean validateJwtToken(String authToken) {
@@ -51,12 +67,5 @@ public class JwtService {
         return false;
     }
 
-    public String getUserNameFromJwtToken(String token) {
 
-        String userName = Jwts.parser()
-                .setSigningKey(SECRET_KEY)
-                .parseClaimsJws(token)
-                .getBody().getSubject();
-        return userName;
-    }
 }

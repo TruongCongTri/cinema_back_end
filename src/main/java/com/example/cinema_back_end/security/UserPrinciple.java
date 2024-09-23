@@ -13,7 +13,8 @@ import java.util.stream.Collectors;
 /**
  * @author tritcse00526x
  */
-public class UserPrinciple implements UserDetails {
+//spring security utilizes a UserDetails object to encapsulate all user-related information
+public class UserPrinciple implements UserDetails { //a class dedicated to transfer user information to UserDetails
 
     private static final long serialVersionUID = 1L;
 

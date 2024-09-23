@@ -12,8 +12,8 @@ import java.util.Optional;
 /**
  * @author tritcse00526x
  */
-
-public interface IUserService extends IGeneralService<User>, UserDetailsService {
+//after login, spring security get information from UserDetails
+public interface IUserService extends IGeneralService<User>, UserDetailsService { //a class dedicated to UserDetails information checking
     Optional<User> findByUsername(String username);
     void updateInfo(Integer userId, User user);
     void changePassword(Integer id,String newPass);

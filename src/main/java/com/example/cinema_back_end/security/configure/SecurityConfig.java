@@ -21,8 +21,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * @author tritcse00526x
  */
 @Configuration
-@EnableWebSecurity
-public class  SecurityConfig extends WebSecurityConfigurerAdapter {
+@EnableWebSecurity //activate spring security on web app
+public class SecurityConfig extends WebSecurityConfigurerAdapter { //a class dedicated to the processing of information pertinent to security matters.
     @Autowired
     private IUserService userService;
 
@@ -34,7 +34,7 @@ public class  SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
     @Override
     public AuthenticationManager authenticationManager() throws Exception {
-        return super.authenticationManager();
+        return super.authenticationManager(); //get AuthenticationManager bean
     }
 
     @Bean
@@ -49,14 +49,16 @@ public class  SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(10);
+        return new BCryptPasswordEncoder(10); //password encoder, utilized by Spring Security for encoding user passwords
     }
 
     @Autowired
     public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userService) //provide a userService for Spring Security
+                .passwordEncoder(passwordEncoder()); //provide password encoder
     }
 
+    // access control
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().ignoringAntMatchers("/**");
@@ -67,15 +69,16 @@ public class  SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/forgot-password**","/api/forgot-password/validate-token",
                         "/api/movies/**","/api/branches/**", "/api/cities/**",
                         "/api/promotions/active/**", "/api/posts/**",
-                        "/api/schedule/active/all-schedule-dates", "/api/schedule/active/**").permitAll()
-                .antMatchers("/api/admin/**").hasRole("ADMIN")
-                .antMatchers("/api/**").hasRole("CLIENT")
-                .anyRequest().authenticated()
+                        "/api/schedule/active/all-schedule-dates", "/api/schedule/active/**").permitAll() //permit unrestricted access to these addresses for all individuals
+                .antMatchers("/api/admin/**").hasRole("ADMIN") // permit restricted access to these addresses for only individuals has admin authorization
+                .antMatchers(HttpMethod.POST,"/api/reviews").hasRole("CLIENT")
+                .antMatchers("/api/**").hasRole("CLIENT") // permit restricted access to these addresses for only individuals has client authorization
+                .anyRequest().authenticated() // all other requests must be authenticated prior to access
                 .and().csrf().disable();
-        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class) //add another filter layer to validate the JWT
                 .exceptionHandling().accessDeniedHandler(customAccessDeniedHandler());
         http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.cors();
+        http.cors(); //prevent requests from an external domain
     }
 }

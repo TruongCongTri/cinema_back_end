@@ -17,6 +17,9 @@ import java.io.IOException;
 /**
  * @author tritcse00526x
  */
+//a filter
+//responsible for validating the request before it reaches its destination.
+//by retrieving the Authorization header and checks whether the JWT string provided by the user is valid
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private JwtService jwtService;
@@ -28,17 +31,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,HttpServletResponse response,FilterChain filterChain)
             throws ServletException, IOException {
         try {
+            //get JWT from request
             String jwt = getJwtFromRequest(request);
             if (jwt != null && jwtService.validateJwtToken(jwt)) {
+                //get username from JWT string
                 String username = jwtService.getUserNameFromJwtToken(jwt);
-
+                //get UserDetails information from username
                 UserDetails userDetails = userService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails,null,userDetails.getAuthorities());
+                if(userDetails != null) { //if valid UserDetails
+                    //set information for Security Context
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities());
 
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
             }
         } catch (Exception e) {
             logger.error("Can NOT set user authentication -> Message: {}", e);
@@ -49,7 +57,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private String getJwtFromRequest(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
-
+        //verify whether the Authorization header contains JWT information
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             return authHeader.replace("Bearer ", "");
         }

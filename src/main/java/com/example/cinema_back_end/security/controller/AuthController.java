@@ -43,14 +43,20 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user) {
         try {
+            //authenticate using the username and password
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+                    new UsernamePasswordAuthenticationToken(
+                            user.getUsername(),
+                            user.getPassword()));
+            //if no exception occurs, this indicates that the information is valid
+            //set the authentication information in the Security Context
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            //return the JWT to the user
             String jwt = jwtService.generateTokenLogin(authentication);
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             User currentUser = userService.findByUsername(user.getUsername()).get();
-            return ResponseEntity.ok(new JwtResponse(jwt, currentUser.getId(), userDetails.getUsername(), currentUser.getFullName()
-                    ,currentUser.getRoles()));
+            return ResponseEntity.ok(new
+                    JwtResponse(jwt, currentUser.getId(),userDetails.getUsername(),currentUser.getFullName(),currentUser.getRoles()));
         }
         catch (Exception e){
             System.out.println(e);
@@ -61,6 +67,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
         try {
+            //verify whether username is existed in the database
             if(userService.findByUsername(user.getUsername()).isPresent()){
                 throw new Exception("Đã tồn tại người dùng, vui lòng chọn tên đăng nhập khác");
             }
@@ -78,15 +85,18 @@ public class AuthController {
                     }).collect(Collectors.toSet());
             user.setRoles(roles);
             userService.save(user);
+
+            //if no exception occurs, this indicates that the information is valid
+            //set the authentication information in the Security Context
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getUsername(),password));
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
+            //return the JWT to the user
             String jwt = jwtService.generateTokenLogin(authentication);
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             User currentUser = userService.findByUsername(user.getUsername()).get();
             return ResponseEntity.ok(new
-                    JwtResponse(jwt, currentUser.getId(), userDetails.getUsername(), currentUser.getFullName(),currentUser.getRoles()));
+                    JwtResponse(jwt,currentUser.getId(),userDetails.getUsername(),currentUser.getFullName(),currentUser.getRoles()));
         }
         catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
