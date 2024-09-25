@@ -33,7 +33,7 @@ public class SeatService implements ISeatService{
     @Override
     public List<SeatDTO> findSeatsByScheduleAndUser(Integer scheduleId, Integer userId) {
         // get room and all seats within a room
-        Room room = scheduleRepository.getById(scheduleId).getRoom();
+        Room room = scheduleRepository.findScheduleByIdAndIsActive(scheduleId,1).getRoom();
         List<Seat> listSeat = seatRepository.findSeatsByRoomId(room.getId());
 
         // get all booked seats

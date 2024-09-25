@@ -34,7 +34,7 @@ public class MovieAPI {
     @GetMapping("/active/detail")
     private MovieDTO findActiveMovie(@RequestParam Integer movieId) {
         System.out.println("LOG: Get movie detail");
-        return movieService.findActiveById(movieId);
+        return movieService.findActiveMovie(movieId);
     }
     /*END - MOVIE page*/
 

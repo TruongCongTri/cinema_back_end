@@ -11,7 +11,7 @@ public interface IMovieService extends IGeneralService<MovieDTO> {
     /**/
     List<MovieDTO> findAllActiveShowingMovies();
     List<MovieDTO> findAllActiveComingMovies();
-    MovieDTO findActiveById(Integer id);
+    MovieDTO findActiveMovie(Integer id);
     /**/
    /* MovieDTO getMovieAndSchedules(Integer id);
     MovieDTO getMovieAndSchedulesIsShowing(Integer id);*/

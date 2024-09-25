@@ -56,7 +56,7 @@ public class MovieService implements IMovieService{
     }
 
     @Override
-    public MovieDTO findActiveById(Integer id) {
+    public MovieDTO findActiveMovie(Integer id) {
         Movie movie = movieRepository.findMovieByIdAndIsActive(id, 1);
         MovieDTO movieDTO = modelMapper.map(movie, MovieDTO.class);
         movieDTO.setReviews(movie.getReviewList()

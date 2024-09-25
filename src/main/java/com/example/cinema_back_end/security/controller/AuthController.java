@@ -56,7 +56,7 @@ public class AuthController {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             User currentUser = userService.findByUsername(user.getUsername()).get();
             return ResponseEntity.ok(new
-                    JwtResponse(jwt, currentUser.getId(),userDetails.getUsername(),currentUser.getFullName(),currentUser.getRoles()));
+                    JwtResponse(jwt,currentUser.getId(),userDetails.getUsername(),currentUser.getFullName(),currentUser.getRoles()));
         }
         catch (Exception e){
             System.out.println(e);

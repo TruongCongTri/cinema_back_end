@@ -21,9 +21,9 @@ public class ScheduleAPI {
     /**TODO: SCHEDULE page*/
     /*START - SCHEDULE page*/
     @GetMapping
-    public ScheduleDTO findSchedule(@RequestParam Integer scheduleId){
+    public ScheduleDTO findActiveSchedule(@RequestParam Integer scheduleId){
         System.out.println("LOG: Get schedule detail");
-        return scheduleService.getById(scheduleId);
+        return scheduleService.findActiveSchedule(scheduleId);
     }
     /*END - SCHEDULE page*/
 

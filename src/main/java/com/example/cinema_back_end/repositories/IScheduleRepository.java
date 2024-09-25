@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 /**
@@ -20,7 +19,7 @@ public interface IScheduleRepository extends JpaRepository<Schedule, Integer> {
     /*START - MOVIE|BRANCH page - booking*/
     // get all start dates of active schedules
     @Query("SELECT DISTINCT s.startDate FROM Schedule s WHERE s.isActive = 1")
-    List<LocalDate> getStartDatesByIsActive();
+    List<LocalDate> findStartDatesByIsActive();
     /*END - MOVIE|BRANCH page - booking*/
     @Query("SELECT s FROM Schedule s WHERE s.movie.id = :movieId")
     List<Schedule> findByMovieId(@Param("movieId") Integer movieId);
@@ -34,7 +33,7 @@ public interface IScheduleRepository extends JpaRepository<Schedule, Integer> {
             "WHERE s.isActive = 1 " +
             "AND s.movie.id = :movieId " +
             "AND s.branch.id = :branchId")
-    List<LocalDate> getStartDatesByMovieIdAndBranchIdAndIsActive(
+    List<LocalDate> findStartDatesByMovieIdAndBranchIdAndIsActive(
             @Param("movieId") Integer movieId,
             @Param("branchId") Integer branchId);
 
@@ -45,11 +44,13 @@ public interface IScheduleRepository extends JpaRepository<Schedule, Integer> {
             "WHERE s.isActive = 1 " +
             "AND s.movie.id = :movieId " +
             "AND s.branch.id = :branchId")
-    List<Schedule> getSchedulesByMovieIdAndBranchIdAndIsActive(
+    List<Schedule> findSchedulesByMovieIdAndBranchIdAndIsActive(
             @Param("movieId") Integer movieId,
             @Param("branchId") Integer branchId);
     /*END - HOME page - quick booking*/
 
+    /*SCHEDULE - CHOOSE SEATS page*/
+    Schedule findScheduleByIdAndIsActive(Integer id, Integer isActive);
 //INACTIVE
     List<Schedule> findSchedulesByBranchId(Integer branchId);
     List<Schedule> findSchedulesByBranchIdAndRoomId(Integer branchId, Integer movieId);

@@ -19,5 +19,8 @@ public interface IScheduleService extends IGeneralService<ScheduleDTO>{
     List<String> findActiveStartDatesByMovieAndBranch(Integer movieId, Integer branchId);
     /*HOME - quick booking*/
 
-    List<ScheduleDTO> getSchedulesByMovie(Integer movieId);
+    List<ScheduleDTO> findSchedulesByMovie(Integer movieId);
+
+    /*SCHEDULE - choose seat*/
+    ScheduleDTO findActiveSchedule(Integer id);
 }

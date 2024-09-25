@@ -2,11 +2,8 @@
 package com.example.cinema_back_end.security.service;
 
 import com.example.cinema_back_end.entities.User;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-
-import java.util.List;
 import java.util.Optional;
 
 /**

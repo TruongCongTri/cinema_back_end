@@ -63,13 +63,13 @@ public class ScheduleServiceTest {
         int movieId = 15;
         int branchId = 1;
         // 2. define behavior of Repository
-        when(scheduleRepository.getSchedulesByMovieIdAndBranchIdAndIsActive(movieId, branchId)).thenReturn(mockSchedules);
+        when(scheduleRepository.findSchedulesByMovieIdAndBranchIdAndIsActive(movieId, branchId)).thenReturn(mockSchedules);
         // 3. call service method
         List<Schedule> actualBranches = scheduleService.findActiveSchedulesByMovieAndBranch(movieId, branchId).stream().map((schedule) -> modelMapper.map(schedule, Schedule.class)).collect(Collectors.toList());
         // 4. assert the result
         assertThat(actualBranches.size()).isEqualTo(mockSchedules.size());
         // 4.1 ensure repository is called
-        verify(scheduleRepository).getSchedulesByMovieIdAndBranchIdAndIsActive(movieId, branchId);
+        verify(scheduleRepository).findSchedulesByMovieIdAndBranchIdAndIsActive(movieId, branchId);
     }
 
 

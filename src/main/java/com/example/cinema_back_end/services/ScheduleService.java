@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,7 +32,7 @@ public class ScheduleService implements IScheduleService {
     @Override
     public List<String> findStartDatesOfActiveSchedules() {
         LocalDate date= LocalDate.now();
-        return scheduleRepository.getStartDatesByIsActive()
+        return scheduleRepository.findStartDatesByIsActive()
                 .stream().filter(localDate -> localDate.compareTo(date) >= 0)
                 .map(localDate -> localDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
                 .collect(Collectors.toList());
@@ -46,7 +45,7 @@ public class ScheduleService implements IScheduleService {
     @Override
     public List<String> findActiveStartDatesByMovieAndBranch(Integer movieId, Integer branchId) {
         LocalDate date = LocalDate.now();
-        return scheduleRepository.getStartDatesByMovieIdAndBranchIdAndIsActive(movieId,branchId)
+        return scheduleRepository.findStartDatesByMovieIdAndBranchIdAndIsActive(movieId,branchId)
                 .stream()
                 .filter(localDate -> localDate.compareTo(date) >= 0)
                 .map(localDate -> localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
@@ -56,7 +55,7 @@ public class ScheduleService implements IScheduleService {
     // dropdown list - active schedule based on selected movie and branch
     @Override
     public List<ScheduleDTO> findActiveSchedulesByMovieAndBranch(Integer movieId, Integer branchId) {
-        return scheduleRepository.getSchedulesByMovieIdAndBranchIdAndIsActive(movieId, branchId)
+        return scheduleRepository.findSchedulesByMovieIdAndBranchIdAndIsActive(movieId, branchId)
                 .stream()
                 .map(schedule -> modelMapper.map(schedule, ScheduleDTO.class))
                 .collect(Collectors.toList());
@@ -64,7 +63,7 @@ public class ScheduleService implements IScheduleService {
     /*END - HOME page - quick booking*/
 
     @Override
-    public List<ScheduleDTO> getSchedulesByMovie(Integer movieId) {
+    public List<ScheduleDTO> findSchedulesByMovie(Integer movieId) {
         return scheduleRepository.findByMovieId(movieId)
                 .stream().map(schedule -> {
                     ScheduleDTO s = modelMapper.map(schedule,ScheduleDTO.class);
@@ -76,7 +75,18 @@ public class ScheduleService implements IScheduleService {
                 .collect(Collectors.toList());
     }
 
-/*END-Override from IScheduleService*/
+    /**TODO: CHOOSE SEATS page*/
+    /*SCHEDULE - choose seat*/
+    @Override
+    public ScheduleDTO findActiveSchedule(Integer id) {
+        ScheduleDTO s = modelMapper.map(scheduleRepository.findScheduleByIdAndIsActive(id,1),ScheduleDTO.class);
+        s.setBranch(modelMapper.map(s.getBranch(), BranchDTO.class));
+        s.setMovie(modelMapper.map(s.getMovie(), MovieDTO.class));
+        s.setRoom(modelMapper.map(s.getRoom(), RoomDTO.class));
+        return s;
+    }
+
+    /*END-Override from IScheduleService*/
 
 /*START-Override from IGeneralService*/
     @Override

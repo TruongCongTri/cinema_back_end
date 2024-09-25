@@ -45,7 +45,7 @@ public class BillService implements IBillService{
         LocalDate date = LocalDate.now();
         LocalTime time = LocalTime.now();
         // get schedule of the booking request
-        Schedule schedule = scheduleRepository.getById(bookingRequestDTO.getScheduleId());
+        Schedule schedule = scheduleRepository.findScheduleByIdAndIsActive(bookingRequestDTO.getScheduleId(),1);
         if(schedule.getStartDate().compareTo(date) > 0 ||
                 (schedule.getStartDate().compareTo(date) == 0 && schedule.getStartTime().compareTo(time) > 0)) { // if start date and time are greater than the current time
             // get user send the booking request
@@ -98,7 +98,6 @@ public class BillService implements IBillService{
     public BillDTO getById(Integer billId) {
         return modelMapper.map(billRepository.getById(billId),BillDTO.class);
     }
-
 
     @Override
     public void remove(Integer id) {

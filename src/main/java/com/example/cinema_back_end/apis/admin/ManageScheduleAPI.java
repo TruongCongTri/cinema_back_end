@@ -75,6 +75,6 @@ public class ManageScheduleAPI {
 //prepare for future instalment
     @PostMapping("/by-movie")
 	public ResponseEntity<List<ScheduleDTO>> getSchedulesByMovie(@Param("movieId") Integer movieId) {
-		return new ResponseEntity<List<ScheduleDTO>>(scheduleService.getSchedulesByMovie(movieId), HttpStatus.OK);
+		return new ResponseEntity<List<ScheduleDTO>>(scheduleService.findSchedulesByMovie(movieId), HttpStatus.OK);
 	}
 }
